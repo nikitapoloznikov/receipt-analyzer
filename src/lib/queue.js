@@ -4,13 +4,16 @@ import { saveReceiptWithConversion } from './receipt.js';
 
 const MAX_CONCURRENT = 3;
 
+function lc(v) { return String(v || '').toLowerCase(); }
+
 function shouldAutoSave(r) {
   if (r.status !== 'parsed') return false;
   if (!r.merchant || !r.currency) return false;
   if (!(r.total > 0)) return false;
   const c = r.confidence || {};
-  if (c.overall !== 'high') return false;
-  if (c.merchant === 'low' || c.total === 'low' || c.datetime === 'low' || c.items === 'low') return false;
+  if (lc(c.overall) === 'low') return false;
+  if (lc(c.merchant) === 'low') return false;
+  if (lc(c.total) === 'low') return false;
   return true;
 }
 
