@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/receipt-analyzer/sw.js', { scope: '/receipt-analyzer/' })})}
