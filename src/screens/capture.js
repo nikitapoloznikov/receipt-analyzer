@@ -34,9 +34,9 @@ export async function renderCapture(root) {
       </label>
     </div>
     <section class="queue">
-      <h2 class="queue-title">Queue <span id="queue-count" class="queue-count">0</span></h2>
+      <h2 class="queue-title">Needs review <span id="queue-count" class="queue-count">0</span></h2>
       <div id="queue-grid" class="queue-grid"></div>
-      <p class="muted small" id="queue-hint">Tap a receipt thumbnail to review and save.</p>
+      <p class="muted small" id="queue-hint">Confident parses auto-save to the list. Tap a thumbnail here to review the rest.</p>
     </section>
   `;
 
@@ -57,10 +57,10 @@ export async function renderCapture(root) {
     queueCount.textContent = visible.length;
     queueGrid.innerHTML = '';
     if (!visible.length) {
-      queueHint.textContent = 'No receipts in queue.';
+      queueHint.textContent = 'Nothing to review. Snap a receipt or check the list for saved ones.';
       return;
     }
-    queueHint.textContent = 'Tap a receipt thumbnail to review and save.';
+    queueHint.textContent = 'Confident parses auto-save to the list. Tap a thumbnail here to review the rest.';
 
     for (const r of visible) {
       const tile = document.createElement('a');

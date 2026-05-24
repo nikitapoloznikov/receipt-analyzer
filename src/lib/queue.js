@@ -1,7 +1,18 @@
 import { parseReceipt } from './claude.js';
 import { getPhoto, getReceipt, putReceipt } from './db.js';
+import { saveReceiptWithConversion } from './receipt.js';
 
 const MAX_CONCURRENT = 3;
+
+function shouldAutoSave(r) {
+  if (r.status !== 'parsed') return false;
+  if (!r.merchant || !r.currency) return false;
+  if (!(r.total > 0)) return false;
+  const c = r.confidence || {};
+  if (c.overall !== 'high') return false;
+  if (c.merchant === 'low' || c.total === 'low' || c.datetime === 'low' || c.items === 'low') return false;
+  return true;
+}
 
 let pending = [];
 let active = 0;
@@ -84,6 +95,14 @@ async function process(id) {
     parse_error: null
   });
   await putReceipt(updated);
+
+  if (shouldAutoSave(updated)) {
+    try {
+      await saveReceiptWithConversion(updated);
+    } catch (err) {
+      console.warn('Auto-save failed, leaving in queue for review:', err);
+    }
+  }
 }
 
 export function snapshot() {
